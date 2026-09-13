@@ -1,5 +1,5 @@
 import { sites } from '@openai/sites-vite-plugin';
-import tailwindcss from '@tailwindcss/postcss';
+import tailwindcss from '@tailwindcss/vite';
 import vinext from 'vinext';
 import { nitro } from 'nitro/vite';
 import { defineConfig } from 'vite';
@@ -38,12 +38,8 @@ const localBindingConfig = {
 export default defineConfig(async () => {
   if (isVercel) {
     return {
-      css: {
-        postcss: {
-          plugins: [tailwindcss()],
-        },
-      },
       plugins: [
+        tailwindcss(),
         vinext(),
         sites(),
         nitro(),
@@ -58,12 +54,8 @@ export default defineConfig(async () => {
   const { cloudflare } = await import('@cloudflare/vite-plugin');
 
   return {
-    css: {
-      postcss: {
-        plugins: [tailwindcss()],
-      },
-    },
     plugins: [
+      tailwindcss(),
       vinext(),
       sites(),
       cloudflare({
