@@ -1,0 +1,1 @@
+import {PageShell} from '@/components/site-shell';import {Admin} from '@/components/admin';export const metadata={title:'Administración · El Diván',robots:{index:false,follow:false}};export default function Page(){return <PageShell><Admin/></PageShell>}

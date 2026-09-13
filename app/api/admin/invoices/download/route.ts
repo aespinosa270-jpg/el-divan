@@ -1,0 +1,2 @@
+import {endpoint,text,ApiError} from '@/lib/validation';import {requireAdmin} from '@/lib/security';import {invoiceDownload} from '@/lib/invoicing';
+export async function GET(r:Request){return endpoint(async()=>{await requireAdmin(r);const p=new URL(r.url).searchParams,format=p.get('format');if(format!=='xml'&&format!=='pdf')throw new ApiError(400,'Formato no válido.');return invoiceDownload(text(p.get('id'),'la factura'),format);});}

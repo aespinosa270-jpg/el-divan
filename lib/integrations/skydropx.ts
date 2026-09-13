@@ -1,0 +1,14 @@
+import {IntegrationError,providerFetch,providerJson} from './http';
+export type SkyAddress={country_code:'MX';postal_code:string;area_level1:string;area_level2:string;area_level3:string;street1:string;name:string;company:string;phone:string;email:string};
+export type SkyParcel={length:number;width:number;height:number;weight:number};
+export type SkyQuotation={id:string;is_completed?:boolean;rates?:unknown[];[key:string]:unknown};
+export class SkydropxClient{
+ private token='';private expiresAt=0;
+ constructor(private clientId:string,private clientSecret:string,private baseUrl='https://sb-pro.skydropx.com',private liveApproved=false,private transport:typeof fetch=fetch){if(!clientId||!clientSecret)throw new IntegrationError('Skydropx',503,'credentials_missing');if(!['https://sb-pro.skydropx.com','https://api-pro.skydropx.com'].includes(baseUrl))throw new IntegrationError('Skydropx',400,'invalid_api_origin');if(baseUrl==='https://api-pro.skydropx.com'&&!liveApproved)throw new IntegrationError('Skydropx',403,'live_not_approved');}
+ private async accessToken(){if(this.token&&this.expiresAt>Date.now())return this.token;const r=await providerFetch('Skydropx',this.baseUrl+'/api/v1/oauth/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'client_credentials',client_id:this.clientId,client_secret:this.clientSecret})},this.transport);const data=await providerJson<{access_token:string;expires_in:number}>('Skydropx',r);if(!data.access_token||!Number.isFinite(data.expires_in))throw new IntegrationError('Skydropx',502,'invalid_token_response');this.token=data.access_token;this.expiresAt=Date.now()+Math.max(0,data.expires_in-60)*1000;return this.token;}
+ private async request<T>(path:string,method='GET',data?:unknown){const token=await this.accessToken();return providerJson<T>('Skydropx',await providerFetch('Skydropx',this.baseUrl+path,{method,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:data?JSON.stringify(data):undefined},this.transport));}
+ createQuotation(from:SkyAddress,to:SkyAddress,parcels:SkyParcel[]){if(!parcels.length||parcels.some(p=>[p.length,p.width,p.height,p.weight].some(n=>!Number.isFinite(n)||n<=0)))throw new IntegrationError('Skydropx',400,'invalid_parcels');return this.request<SkyQuotation>('/api/v1/quotations','POST',{quotation:{address_from:from,address_to:to,parcels}});}
+ getQuotation(id:string){return this.request<SkyQuotation>('/api/v1/quotations/'+encodeURIComponent(id));}
+ createShipment(rateId:string,from:SkyAddress,to:SkyAddress,parcel:SkyParcel&{consignment_note:string;package_type:string}){return this.request<Record<string,unknown>>('/api/v1/shipments','POST',{shipment:{rate_id:rateId,unique_shipment:true,printing_format:'standard',address_from:from,address_to:to,parcels:[parcel]}});}
+ getShipment(id:string){return this.request<Record<string,unknown>>('/api/v1/shipments/'+encodeURIComponent(id));}
+}

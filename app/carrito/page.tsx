@@ -1,0 +1,1 @@
+import {PageShell} from '@/components/site-shell';import {Cart} from '@/components/cart';export const metadata={title:'Carrito · El Diván',robots:{index:false,follow:false}};export default function Page(){return <PageShell><p className="eyebrow">TUS LECTURAS</p><h1>Carrito</h1><Cart/></PageShell>}

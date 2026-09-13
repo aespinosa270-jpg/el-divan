@@ -1,0 +1,3 @@
+import {PageShell} from '@/components/site-shell';import {Catalog} from '@/components/catalog';import {all} from '@/lib/db';import type {Product} from '@/lib/types';
+export const metadata={title:'Catálogo · El Diván'};
+export default async function Page({searchParams}:{searchParams:Promise<Record<string,string>>}){const p=await searchParams;return <PageShell><p className="eyebrow">LA BIBLIOTECA DE EL DIVÁN</p><h1>Catálogo</h1><p>Encuentra tu próxima lectura.</p><Catalog initial={await all<Product>('SELECT * FROM products WHERE published=1 ORDER BY created_at DESC LIMIT 500')} category={p.categoria||''}/></PageShell>}

@@ -1,0 +1,3 @@
+export type Product={id:string;slug:string;title:string;author:string;publisher:string;description:string;isbn:string|null;sku:string|null;price_cents:number;stock:number;cover:string;images:string;category:string;tags:string;weight:number;length:number;width:number;height:number;published:number;featured:number;created_at:string;updated_at:string};
+export type Post={id:string;slug:string;title:string;excerpt:string;body:string;author:string;category:string;cover:string;published:number;created_at:string;updated_at:string};
+export type CartItem=Pick<Product,'id'|'slug'|'title'|'author'|'price_cents'|'stock'|'published'|'cover'>&{quantity:number};

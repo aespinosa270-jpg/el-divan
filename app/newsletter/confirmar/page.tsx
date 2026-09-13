@@ -1,0 +1,1 @@
+import {PageShell} from '@/components/site-shell';import {NewsletterAction} from '@/components/newsletter';export const metadata={title:'Confirmar suscripción · El Diván',robots:{index:false,follow:false}};export default function Page(){return <PageShell><h1>Confirma tu suscripción</h1><NewsletterAction action="confirm"/></PageShell>}

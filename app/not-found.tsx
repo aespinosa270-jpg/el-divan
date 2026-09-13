@@ -1,0 +1,1 @@
+import Link from 'next/link';export default function NotFound(){return <main className="content"><p className="eyebrow">EL DIVÁN</p><h1>No encontramos esta página.</h1><Link className="button" href="/catalogo">Volver al catálogo</Link></main>}

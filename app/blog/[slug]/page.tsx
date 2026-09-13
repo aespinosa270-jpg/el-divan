@@ -1,0 +1,4 @@
+import {PageShell} from '@/components/site-shell';import {one} from '@/lib/db';import type {Post} from '@/lib/types';import {notFound} from 'next/navigation';
+async function post(slug:string){return one<Post>('SELECT * FROM posts WHERE slug=? AND published=1',slug);}
+export async function generateMetadata({params}:{params:Promise<{slug:string}>}){const p=await post((await params).slug);return {title:p?p.title+' · El Diván':'Artículo no encontrado',description:p?.excerpt,openGraph:{title:p?.title,description:p?.excerpt},twitter:{title:p?.title,description:p?.excerpt}};}
+export default async function Page({params}:{params:Promise<{slug:string}>}){const p=await post((await params).slug);if(!p)notFound();return <PageShell><article><p className="eyebrow">{p.category}</p><h1>{p.title}</h1><p>{p.author} · {p.created_at.slice(0,10)}</p>{p.cover&&<img src={p.cover} alt="" style={{maxWidth:'100%',maxHeight:450}}/>}<p className="prose">{p.body}</p></article></PageShell>}

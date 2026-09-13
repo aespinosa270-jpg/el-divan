@@ -1,0 +1,2 @@
+import {PageShell} from '@/components/site-shell';import {all} from '@/lib/db';import {BookGrid} from '@/components/book-grid';import type {Product} from '@/lib/types';export const metadata={title:'Novedades · El Diván'};
+export default async function Page(){return <PageShell><p className="eyebrow">NUEVAS LECTURAS</p><h1>Novedades editoriales</h1><BookGrid books={await all<Product>('SELECT * FROM products WHERE published=1 ORDER BY created_at DESC LIMIT 24')}/></PageShell>}

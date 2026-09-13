@@ -1,0 +1,1 @@
+import {PageShell} from '@/components/site-shell';import {Cart} from '@/components/cart';export const metadata={title:'Checkout · El Diván',robots:{index:false,follow:false}};export default function Page(){return <PageShell><p className="eyebrow">REVISA TU SELECCIÓN</p><h1>Finalizar compra</h1><Cart checkout/></PageShell>}

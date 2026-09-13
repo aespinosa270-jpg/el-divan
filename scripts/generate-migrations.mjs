@@ -1,0 +1,22 @@
+import { generateSQLiteDrizzleJson, generateSQLiteMigration } from 'drizzle-kit/api';
+import ts from 'typescript';
+import fs from 'node:fs';
+import {pathToFileURL} from 'node:url';
+import path from 'node:path';
+fs.mkdirSync('work',{recursive:true});
+fs.writeFileSync('work/schema.js',ts.transpileModule(fs.readFileSync('db/schema.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.ESNext}}).outputText);
+const schema=await import(pathToFileURL(path.resolve('work/schema.js')).href);
+const journalPath='drizzle/meta/_journal.json';
+const journal=fs.existsSync(journalPath)?JSON.parse(fs.readFileSync(journalPath,'utf8')):{version:'7',dialect:'sqlite',entries:[]};
+const last=journal.entries.at(-1);
+const previous=last?JSON.parse(fs.readFileSync(`drizzle/meta/${String(last.idx).padStart(4,'0')}_snapshot.json`,'utf8')):await generateSQLiteDrizzleJson({});
+const current=await generateSQLiteDrizzleJson(schema,previous.id);
+const sql=await generateSQLiteMigration(previous,current);
+if(!sql.length){console.log('No schema changes.');process.exit(0);}
+const idx=journal.entries.length,tag=String(idx).padStart(4,'0')+'_divan';
+fs.mkdirSync('drizzle/meta',{recursive:true});
+fs.writeFileSync(`drizzle/${tag}.sql`,sql.join('\n--> statement-breakpoint\n')+'\n');
+fs.writeFileSync(`drizzle/meta/${String(idx).padStart(4,'0')}_snapshot.json`,JSON.stringify(current,null,2));
+journal.entries.push({idx,version:'6',when:Date.now(),tag,breakpoints:true});
+fs.writeFileSync(journalPath,JSON.stringify(journal,null,2));
+console.log(`Generated ${sql.length} statements: ${tag}`);

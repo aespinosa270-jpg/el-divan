@@ -1,0 +1,1 @@
+import {endpoint,body,sameOrigin} from '@/lib/validation';import {limit} from '@/lib/security';import {subscribe} from '@/lib/newsletter';export async function POST(r:Request){return endpoint(async()=>{sameOrigin(r);await limit(r,'newsletter',5);const b=await body(r);return Response.json(await subscribe(b.email,b.consent,b.version),{headers:{'Cache-Control':'no-store'}});});}

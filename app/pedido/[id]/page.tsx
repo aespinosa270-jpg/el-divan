@@ -1,0 +1,1 @@
+import {PageShell} from '@/components/site-shell';export const metadata={title:'Pedido · El Diván',robots:{index:false,follow:false}};export default function Page(){return <PageShell><h1>Consulta de pedido</h1><p className="notice">El acceso seguro a pedidos estará disponible cuando se habiliten las cuentas de clientes. Esta pantalla no confirma ningún pago.</p></PageShell>}

@@ -1,0 +1,1 @@
+import {PageShell} from '@/components/site-shell';import {NewsletterAction} from '@/components/newsletter';export const metadata={title:'Dar de baja · El Diván',robots:{index:false,follow:false}};export default function Page(){return <PageShell><h1>Gestiona tu suscripción</h1><NewsletterAction action="unsubscribe"/></PageShell>}
