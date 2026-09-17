@@ -6,6 +6,8 @@ export class CommerceConflict extends Error {}
 export type ShippingQuote={cartId:string;amountCents:number;expiresAt:number};
 export type OrderInput={cartId:string;requestKey:string;email:string;address:Record<string,string>;quote:ShippingQuote};
 export type Order={id:string;cart_id:string;request_key:string;status:string;reserved:number;total:number;payment_id:string|null};
+type D1Statement={bind:(...values:unknown[])=>D1Statement;first:<T=Record<string,unknown>>()=>Promise<T|null>};
+type D1Database={prepare:(sql:string)=>D1Statement;batch:(statements:D1Statement[])=>Promise<unknown>};
 export function commerce(db:D1Database){
  const stmt=(sql:string,...v:unknown[])=>db.prepare(sql).bind(...v);
  async function order(id:string){return stmt('SELECT * FROM orders WHERE id=?',id).first<Order>();}
