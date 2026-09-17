@@ -440,7 +440,7 @@ export async function one<T = Record<string, unknown>>(
 export async function run(
   sql: string,
   ...values: unknown[]
-): Promise<unknown> {
+): Promise<{ rowsAffected: number }> {
   if (DEMO) {
     return {
       success: true,
@@ -480,3 +480,4 @@ export const vacationDefault = {
 export async function vacation() {
   return getSetting('vacation', vacationDefault);
 }
+
