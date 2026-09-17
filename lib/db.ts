@@ -442,10 +442,7 @@ export async function run(
   ...values: unknown[]
 ): Promise<{ rowsAffected: number }> {
   if (DEMO) {
-    return {
-      success: true,
-      rowsAffected: 1,
-    };
+    return { rowsAffected: 1 };
   }
 
   return database().execute({
@@ -480,4 +477,5 @@ export const vacationDefault = {
 export async function vacation() {
   return getSetting('vacation', vacationDefault);
 }
+
 
